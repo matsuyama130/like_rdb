@@ -8,8 +8,8 @@ $user_id = $_SESSION['user_id'];
 $pdo = connect_to_db();
 
 
-$sql = 'SELECT * FROM lost_table ORDER BY takeout ASC';
-
+//$sql = 'SELECT * FROM lost_table ORDER BY takeout ASC';
+$sql = 'SELECT * FROM lost_table LEFT OUTER JOIN (SELECT lost_id, COUNT(id) AS check_count FROM check_table GROUP BY lost_id) AS result_table ON lost_table.id = result_table.lost_id';
 $stmt = $pdo->prepare($sql);
 
 try {
@@ -20,6 +20,10 @@ try {
 }
 
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//var_dump($result);
+//exit();
+
+
 $output = "";
 
 foreach ($result as $record) {
@@ -28,7 +32,7 @@ foreach ($result as $record) {
       <td>{$record["takeout"]}</td>
       <td>{$record["tool"]}</td>
       <td>
-<td><a href='check_create.php?user_id={$user_id}&lost_id={$record["id"]}'>check{$record["check_count"]}</a></td>
+<td><a href='check_create.php?user_id={$user_id}&lost_id={$record["id"]}'>check({$record['check_count']})</a></td>
       <td><a href='lost_edit.php?id={$record["id"]}'>edit</a></td>
       <td><a href='lost_delete.php?id={$record["id"]}'>delete</a></td>
     </tr>

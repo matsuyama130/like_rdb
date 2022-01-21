@@ -8,8 +8,6 @@ $lost_id = $_GET['lost_id'];
 $pdo = connect_to_db();
 
 
-
-
 $sql = 'SELECT COUNT(*) FROM check_table WHERE user_id=:user_id AND lost_id=:lost_id';
 
 $stmt = $pdo->prepare($sql);
@@ -28,14 +26,12 @@ $check_count=$stmt->fetchColumn();
 //exit();
 
 
-
-
-if ($like_count != 0) {
+if ($check_count!= 0) {
   // いいねされている状態
   $sql = 'DELETE FROM check_table WHERE user_id=:user_id AND lost_id=:lost_id';
 } else {
   // いいねされていない状態
-  $sql = 'INSERT INTO check_table (id, user_id, lost_id, created_at) VALUES (NULL, :user_id, :todo_id, sysdate())';
+  $sql = 'INSERT INTO check_table (id, user_id, lost_id, created_at) VALUES (NULL, :user_id, :lost_id, sysdate())';
 }
 
 $stmt = $pdo->prepare($sql);
